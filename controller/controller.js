@@ -32,7 +32,7 @@ router.get("/", function (req, res) {
 // A GET request to scrape the Verge website
 router.get("/scrape", function (req, res) {
     // First, we grab the body of the html with request
-    request("http://www.theverge.com/tech", function (error, response, html) {
+    request("https://www.theverge.com/tech", function (error, response, html) {
         // Then, we load that into cheerio and save it to $ for a shorthand selector
         var $ = cheerio.load(html);
         var titlesArray = [];
