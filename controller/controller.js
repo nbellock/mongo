@@ -91,7 +91,7 @@ router.get('/scrape', function (req, res) {
 });
 
 //this will grab every article an populate the DOM
-router.get('/article', function (req, res) {
+router.get('/articles', function (req, res) {
     //allows newer articles to be on top
     Article.find().sort({
             _id: -1
