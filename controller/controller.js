@@ -91,7 +91,7 @@ router.get('/scrape', function (req, res) {
 });
 
 //this will grab every article an populate the DOM
-router.get('/articles', function (req, res) {
+router.get('/article', function (req, res) {
     //allows newer articles to be on top
     Article.find().sort({
             _id: -1
@@ -166,7 +166,7 @@ router.get('/readArticle/:id', function (req, res) {
             }
 
         });
-});
+})
 
 // Create a new comment
 router.post('/comment/:id', function (req, res) {
