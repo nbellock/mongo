@@ -14,6 +14,7 @@ var Article = require('../models/Article.js');
 //index
 router.get('/', function (req, res) {
     res.redirect('/articles');
+    // res.render("main");
 });
 
 // router.get('/test-scrape', function(req, res) {
