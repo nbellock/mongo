@@ -21,15 +21,15 @@ app.engine("handlebars", exphbs({
 app.set("view engine", "handlebars");
 
 //connecting to MongoDB
-// mongoose.connect("mongodb://heroku_rx2bjrd1:v3mta9fv4cmsq66enussc2b35q@ds227352.mlab.com:27352/heroku_rx2bjrd1");
+mongoose.connect("mongodb://heroku_rx2bjrd1:v3mta9fv4cmsq66enussc2b35q@ds227352.mlab.com:27352/heroku_rx2bjrd1");
 
-var url = process.env.MONGOLAB_URI
-if (!url) {
-    mongoose.connect("mongodb://localhost/");
-} else {
-    // mongoose.connect("mongodb://localhost/");
-    mongoose.connect(url);
-}
+// var url = process.env.MONGOLAB_URI
+// if (!url) {
+//     mongoose.connect("mongodb://localhost/");
+// } else {
+//     // mongoose.connect("mongodb://localhost/");
+//     mongoose.connect(url);
+// }
 
 
 
