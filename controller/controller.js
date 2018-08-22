@@ -32,63 +32,68 @@ router.get("/", function (req, res) {
 // A GET request to scrape the Verge website
 router.get("/scrape", function (req, res) {
     // First, we grab the body of the html with request
-    request("https://www.theverge.com/tech", function (error, response, html) {
-        // Then, we load that into cheerio and save it to $ for a shorthand selector
-        var $ = cheerio.load(html);
-        var titlesArray = [];
-        // Now, we grab every article
-        $(".c-entry-box--compact__title").each(function (i, element) {
-            // Save an empty result object
-            var result = {};
+    try {
 
-            // Add the text and href of every link, and save them as properties of the result object
-            result.title = $(this).children("a").text();
-            result.link = $(this).children("a").attr("href");
+        request("https://www.theverge.com/tech", function (error, response, html) {
+            // Then, we load that into cheerio and save it to $ for a shorthand selector
+            var $ = cheerio.load(html);
+            var titlesArray = [];
+            // Now, we grab every article
+            $(".c-entry-box--compact__title").each(function (i, element) {
+                // Save an empty result object
+                var result = {};
 
-            //ensures that no empty title or links are sent to mongodb
-            if (result.title !== "" && result.link !== "") {
-                //check for duplicates
-                if (titlesArray.indexOf(result.title) == -1) {
+                // Add the text and href of every link, and save them as properties of the result object
+                result.title = $(this).children("a").text();
+                result.link = $(this).children("a").attr("href");
 
-                    // push the saved title to the array 
-                    titlesArray.push(result.title);
+                //ensures that no empty title or links are sent to mongodb
+                if (result.title !== "" && result.link !== "") {
+                    //check for duplicates
+                    if (titlesArray.indexOf(result.title) == -1) {
 
-                    // only add the article if is not already there
-                    Article.count({
-                        title: result.title
-                    }, function (err, test) {
-                        //if the test is 0, the entry is unique and good to save
-                        if (test == 0) {
+                        // push the saved title to the array 
+                        titlesArray.push(result.title);
 
-                            //using Article model, create new object
-                            var entry = new Article(result);
+                        // only add the article if is not already there
+                        Article.count({
+                            title: result.title
+                        }, function (err, test) {
+                            //if the test is 0, the entry is unique and good to save
+                            if (test == 0) {
 
-                            //save entry to mongodb
-                            entry.save(function (err, doc) {
-                                if (err) {
-                                    console.log(err);
-                                } else {
-                                    console.log(doc);
-                                }
-                            });
+                                //using Article model, create new object
+                                var entry = new Article(result);
 
-                        }
-                    });
+                                //save entry to mongodb
+                                entry.save(function (err, doc) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        console.log(doc);
+                                    }
+                                });
+
+                            }
+                        });
+                    }
+                    // Log that scrape is working, just the content was missing parts
+                    else {
+                        console.log("Article already exists.")
+                    }
+
                 }
                 // Log that scrape is working, just the content was missing parts
                 else {
-                    console.log("Article already exists.")
+                    console.log("Not saved to DB, missing data")
                 }
-
-            }
-            // Log that scrape is working, just the content was missing parts
-            else {
-                console.log("Not saved to DB, missing data")
-            }
+            });
+            // after scrape, redirects to index
+            res.redirect("/");
         });
-        // after scrape, redirects to index
-        res.redirect("/");
-    });
+    } catch (err) {
+        console.log(err)
+    }
 });
 
 //this will grab every article an populate the DOM
